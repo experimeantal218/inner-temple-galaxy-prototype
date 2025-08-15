@@ -21,17 +21,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          # IMPORTANT: remove cache to avoid lockfile requirement
-          # cache: 'npm'
 
-      # If there's no lockfile, this will create one and install deps
       - name: Install
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
+        run: npm install
 
       - name: Build
         run: npm run build
