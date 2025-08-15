@@ -16,17 +16,29 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
-          cache: 'npm'
+          # IMPORTANT: remove cache to avoid lockfile requirement
+          # cache: 'npm'
+
+      # If there's no lockfile, this will create one and install deps
       - name: Install
-        run: npm ci || npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
       - name: Build
         run: npm run build
-      - name: SPA fallback
+
+      - name: SPA fallback (copy index to 404)
         run: cp dist/index.html dist/404.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
